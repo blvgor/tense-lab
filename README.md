@@ -1,19 +1,40 @@
-# English Tenses Grammar Trainer
+# Tense Lab — English Tenses Trainer (IELTS Band 8)
 
-Интерактивный тренажёр 6 базовых английских времён: Present Simple, Present
-Continuous, Past Simple, Present Perfect, Future (will / going to), Past
-Continuous.
+Интерактивный тренажёр **всех 12 английских времён** с фокусом на подготовку
+к IELTS (Grammatical Range & Accuracy → Band 8).
 
-Разделы: **Learn** (разбор каждого времени), **Timeline** (карта времён),
-**Compare** (сравнение и шорткаты), **Practice** (36 вопросов, 3 режима,
-мгновенный фидбек, стрик и прогресс).
+## Разделы
 
-Дизайн — Vercel / Geist. Один статический файл, без сборки.
+- **Learn** — полный разбор каждого времени: идея, формула, употребление,
+  примеры, слова-сигналы, типичные ошибки, применение в IELTS (+ пояснение по-русски).
+- **Map** — карта системы времён 3×4 (время × аспект) + таймлайн шести базовых.
+- **Compare** — сводная таблица 12 времён и 10 «решающих пар» (Past Simple vs
+  Present Perfect, will vs going to и т.д.).
+- **Practice** — 150+ заданий, 5 типов дриллов: Which tense? · Fill the gap ·
+  Type the form · Error hunt · Mixed. Развёрнутый фидбек после каждого ответа:
+  правило, почему неверны остальные варианты, IELTS-подсказка. Сессии 10/20/40.
+- **Games** — Sprint 60 (на время), Match pairs (сопоставление), Survival
+  (3 жизни). Рекорды сохраняются.
+- **Flashcards** — 3 колоды (108 карточек): триггеры времён, неправильные
+  глаголы, слова-сигналы. Интервальное повторение (Leitner).
+- **IELTS** — плейбук Band 8: какие времена нужны в Writing Task 1/2 и
+  Speaking Part 1–3, восемь «убийц балла», 24 экзаменационных вопроса и
+  3 интерактивных cloze-текста (отчёт Task 1, история Part 2, абзац эссе).
+- **Progress** — дашборд: точность по каждому времени и типу заданий,
+  слабые места, рекорды.
+
+Дизайн — Vercel / Geist. Статика без сборки: `index.html` + CSS + 4 JS-файла
+с данными и логикой. Прогресс хранится в localStorage.
 
 ## Локально
-Открыть `index.html` в браузере.
+
+```bash
+python3 -m http.server 4173
+# открыть http://localhost:4173
+```
 
 ## Deploy на Vercel
+
 ```bash
 vercel deploy --prod
 ```
