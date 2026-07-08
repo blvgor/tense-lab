@@ -427,7 +427,11 @@ function renderSprintSetup(){
     const v = Math.round(+e.target.value);
     if(v>=10 && v<=600){ sel=v; $$('.dur-chip').forEach(x=>x.classList.remove('active')); upd(); }
   });
-  $('#sprintGo').addEventListener('click', ()=>{ S.sprintDur=sel; saveS(); beginSprint(sel); });
+  $('#sprintGo').addEventListener('click', ()=>{
+    const cv = $('#durCustom').value.trim();
+    if(cv) sel = Math.min(600, Math.max(10, Math.round(+cv) || 10));
+    S.sprintDur = sel; saveS(); beginSprint(sel);
+  });
   $('#sprintBack').addEventListener('click', renderGamesHub);
 }
 
@@ -709,10 +713,10 @@ function renderCard(){
         </div>
       </div>
       <div class="fc-actions">
-        <button class="btn again" id="fcNo">1 · Again</button>
-        <button class="btn" id="fcYes">2 · Got it</button>
-        <button class="btn ghost" id="fcQuit">End session</button>
+        <button class="btn again" id="fcNo">Again <span class="kbd">1</span></button>
+        <button class="btn" id="fcYes">Got it <span class="kbd">2</span></button>
       </div>
+      <div class="fc-quit-row"><button id="fcQuit">End session</button></div>
     </div>`;
   $('#fcCard').addEventListener('click', flipCard);
   $('#fcNo').addEventListener('click', ()=>gradeCard(false));
@@ -721,12 +725,12 @@ function renderCard(){
 }
 function flipCard(){
   const s = FC.session; if(!s) return;
+  const el = $('#fcCard'); if(!el) return;
   s.flipped = !s.flipped;
-  $('#fcCard').classList.toggle('flipped', s.flipped);
+  el.classList.toggle('flipped', s.flipped);
 }
 function gradeCard(good){
-  const s = FC.session; if(!s) return;
-  if(!s.flipped){ flipCard(); return; }
+  const s = FC.session; if(!s || !s.queue.length) return;
   const idx = s.queue.shift();
   const prog = S.decks[s.deck.id];
   if(good){ prog[idx] = Math.min((prog[idx]||0)+1, 3); }
@@ -832,7 +836,7 @@ function renderDash(){
     const pct = st && st.t ? Math.round(st.c/st.t*100) : null;
     const cls = pct===null ? '' : pct<60 ? 'weak' : pct>=85 ? 'strong' : '';
     return `<div class="tense-bar ${cls}">
-      <div class="tb-head"><span class="tb-name">${t.name}</span><span class="tb-pct">${pct===null?'—':pct+'% · '+st.t+' tries'}</span></div>
+      <div class="tb-head"><span class="tb-name">${t.name}</span><span class="tb-pct">${pct===null?'—':pct+'% · '+st.t+(st.t===1?' try':' tries')}</span></div>
       <div class="track"><i style="width:${pct||0}%"></i></div>
     </div>`;
   }).join('');
@@ -914,7 +918,7 @@ document.addEventListener('keydown', e=>{
     }
   }
   if(active.id==='cards' && FC.session){
-    if(e.key===' '){ e.preventDefault(); flipCard(); }
+    if(e.key===' ' && tag!=='BUTTON'){ e.preventDefault(); flipCard(); }
     if(e.key==='1'){ gradeCard(false); }
     if(e.key==='2'){ gradeCard(true); }
   }

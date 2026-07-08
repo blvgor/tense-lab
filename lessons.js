@@ -191,6 +191,8 @@ function startLesson(id){
 }
 
 function quitLesson(){
+  if(LSN.on && !LSN.done && LSN.idx > 2 &&
+     !confirm('Quit this lesson? Your progress in it will be lost.')) return;
   if(TTS_OK) speechSynthesis.cancel();
   LSN.on = false;
   lessonOv.classList.remove('open');

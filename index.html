@@ -99,20 +99,20 @@
         <button class="mode" data-mode="type">Type the form</button>
         <button class="mode" data-mode="error">Error hunt</button>
       </div>
-      <div class="pr-sub">
-        <div class="modes slim" id="len-row">
-          <button class="mode lenb active" data-len="10">10</button>
-          <button class="mode lenb" data-len="20">20</button>
-          <button class="mode lenb" data-len="40">40</button>
-        </div>
-        <div class="stats">
-          <span class="stat">Question <b id="qpos">1</b>/<b id="qtotal">10</b></span>
-          <span class="stat">Score <b id="score">0</b></span>
-          <span class="stat">Streak <b id="streak">0</b></span>
-        </div>
+      <div class="modes" id="len-row">
+        <button class="mode lenb active" data-len="10">10</button>
+        <button class="mode lenb" data-len="20">20</button>
+        <button class="mode lenb" data-len="40">40</button>
       </div>
     </div>
-    <div class="progress-track"><div class="progress-fill" id="pfill"></div></div>
+    <div class="pr-meta">
+      <div class="progress-track"><div class="progress-fill" id="pfill"></div></div>
+      <div class="stats">
+        <span class="stat">Question <b id="qpos">1</b>/<b id="qtotal">10</b></span>
+        <span class="stat">Score <b id="score">0</b></span>
+        <span class="stat">Streak <b id="streak">0</b></span>
+      </div>
+    </div>
     <div id="quiz-area"></div>
   </section>
 
