@@ -10,10 +10,29 @@ const TIDX  = Object.fromEntries(TENSES.map((t,i) => [t.id, i]));
 function shuffle(a){ a=[...a]; for(let i=a.length-1;i>0;i--){ const j=Math.random()*(i+1)|0; [a[i],a[j]]=[a[j],a[i]]; } return a; }
 const esc = s => s.replace(/&/g,"&amp;").replace(/</g,"&lt;");
 
+/* ---------- icons (inline SVG, stroke 1.8) ---------- */
+const I = {
+  x:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>',
+  check:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>',
+  checkC:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="m8.4 12.3 2.4 2.4 4.9-5.2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+  xC:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M15 9l-6 6M9 9l6 6" stroke-linecap="round"/></svg>',
+  zap:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M13 2 3 14h7l-1 8 11-12h-7l1-8z"/></svg>',
+  layers:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="m12 2 10 5-10 5L2 7l10-5z"/><path d="m2 12 10 5 10-5"/><path d="m2 17 10 5 10-5"/></svg>',
+  shield:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M12 22s8-4 8-10V6l-8-3-8 3v6c0 6 8 10 8 10z"/></svg>',
+  target:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.2" fill="currentColor"/></svg>',
+  compass:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="m15.5 8.5-2 5-5 2 2-5 5-2z"/></svg>',
+  heart:'<svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 21.35 3.9 13.2a5.4 5.4 0 1 1 7.63-7.64l.47.47.47-.47a5.4 5.4 0 0 1 7.63 7.64L12 21.35z"/></svg>',
+  speaker:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M11 5 6 9H3v6h3l5 4V5z"/><path d="M15.5 8.5a5 5 0 0 1 0 7" stroke-linecap="round"/><path d="M18.5 5.5a9 9 0 0 1 0 13" stroke-linecap="round"/></svg>'
+};
+
 /* ---------- persistent state ---------- */
 const LS_KEY = "tenselab-v2";
-let S = { stats:{tense:{},mode:{}}, answered:0, correct:0, best:{sprint:0,survival:0}, decks:{} };
+let S = { stats:{tense:{},mode:{}}, answered:0, correct:0, best:{sprint:0,survival:0}, decks:{}, lessons:{}, sprintDur:60 };
 try{ const raw = localStorage.getItem(LS_KEY); if(raw) S = Object.assign(S, JSON.parse(raw)); }catch(e){}
+S.lessons = S.lessons || {};
+S.best = S.best || {};
+if(!S.best.sprintBy) S.best.sprintBy = S.best.sprint ? {60:S.best.sprint} : {};
+if(!S.sprintDur) S.sprintDur = 60;
 function saveS(){ try{ localStorage.setItem(LS_KEY, JSON.stringify(S)); }catch(e){} }
 function recordAnswer(tid, mode, ok){
   S.answered++; if(ok) S.correct++;
@@ -30,6 +49,7 @@ function switchTab(name){
   $$('.panel').forEach(p=>p.classList.toggle('active', p.id===name));
   window.scrollTo({top:0,behavior:'smooth'});
   stopSprint();
+  if(name==='learn' && typeof renderLearnPath==='function') renderLearnPath();
   if(name==='practice' && !PR.queue.length) startPractice();
   if(name==='games') renderGamesHub();
   if(name==='cards' && !FC.session) renderDecks();
@@ -37,46 +57,14 @@ function switchTab(name){
 }
 $$('.tab').forEach(t=>t.addEventListener('click', ()=>switchTab(t.dataset.tab)));
 
-/* =========================================================
-   LEARN
-========================================================= */
-const GROUPS = [
-  {time:"present", label:"Present — around now"},
-  {time:"past",    label:"Past — behind you"},
-  {time:"future",  label:"Future — ahead"}
-];
-const learnEl = $('#learn-groups');
-GROUPS.forEach(g=>{
-  const tenses = TENSES.filter(t=>t.time===g.time);
-  const head = document.createElement('div');
-  head.className='subhead';
-  head.innerHTML = `<h3>${g.label}</h3><div class="line"></div><span class="cnt">${tenses.length} TENSES</span>`;
-  learnEl.appendChild(head);
-  const grid = document.createElement('div');
-  grid.className='grid';
-  tenses.forEach(t=>{
-    const c = document.createElement('button');
-    c.className='card';
-    c.innerHTML = `
-      <div class="num">TENSE ${t.n} <span class="lvl ${t.level==='core'?'core':''}">${t.level==='core'?'CORE':'RANGE'}</span></div>
-      <h3>${t.name}</h3>
-      <div class="gloss">${t.gloss}</div>
-      <div class="ex">${t.examples[0][0]}<br>${t.examples[1][0]}</div>
-      <div class="open">Open full breakdown →</div>`;
-    c.addEventListener('click', ()=>openModalById(t.id));
-    grid.appendChild(c);
-  });
-  learnEl.appendChild(grid);
-});
-
-/* ---------- modal ---------- */
+/* ---------- modal: full tense breakdown ---------- */
 const modalBg = $('#modalBg'), modalEl = $('#modal');
 function openModalById(id){
   const t = TENSES[TIDX[id]];
   modalEl.innerHTML = `
     <div class="modal-top">
-      <button class="close" aria-label="Close">✕</button>
-      <div class="num">TENSE ${t.n} · ${t.time.toUpperCase()} · ${t.aspect.toUpperCase()}</div>
+      <button class="close" aria-label="Close">${I.x}</button>
+      <div class="num">Tense ${t.n} · ${t.time} · ${t.aspect}</div>
       <h3>${t.name}</h3>
       <div class="gloss">${t.gloss}</div>
       <div class="rugloss">${t.ru}</div>
@@ -123,7 +111,7 @@ function closeModal(){ modalBg.classList.remove('open'); document.body.style.ove
 modalBg.addEventListener('click', e=>{ if(e.target===modalBg) closeModal(); });
 
 /* =========================================================
-   MAP — matrix + timeline
+   REFERENCE — matrix + timeline + compare + tips
 ========================================================= */
 (function renderMatrix(){
   const wrap = $('#matrix');
@@ -140,7 +128,7 @@ modalBg.addEventListener('click', e=>{ if(e.target===modalBg) closeModal(); });
       </button>`;
     });
   });
-  html += '</div><div class="mx-legend"><span><span class="dot" style="background:#0070f3"></span>Core six — carry ~90% of everyday speech</span><span><span class="dot" style="background:#808080"></span>Range six — what separates Band 6.5 from Band 8</span></div>';
+  html += '</div>';
   wrap.innerHTML = html;
   wrap.querySelectorAll('.mx-cell').forEach(b=>b.addEventListener('click',()=>openModalById(b.dataset.id)));
 })();
@@ -165,23 +153,17 @@ modalBg.addEventListener('click', e=>{ if(e.target===modalBg) closeModal(); });
   window.addEventListener('resize', stagger);
 })();
 
-/* =========================================================
-   COMPARE
-========================================================= */
 $('#cmptable').innerHTML =
   `<tr><th>Tense</th><th>Use it for…</th><th>Example</th></tr>` +
   COMPARE.map(r=>`<tr><td>${r[0]}</td><td>${r[1]}</td><td class="m">${r[2]}</td></tr>`).join('');
-TIPS.forEach(tp=>{
-  const d=document.createElement('div');
-  d.className='card'; d.style.cursor='default';
-  d.innerHTML=`<h3 style="font-size:19px;margin-top:0">${tp.t}</h3><div class="gloss" style="margin-top:8px">${tp.d}</div>`;
-  $('#tips').appendChild(d);
-});
+
+$('#tips').innerHTML = TIPS.map(tp=>
+  `<div class="tip-item"><h3>${tp.t}</h3><p>${tp.d}</p></div>`).join('');
 
 /* =========================================================
    PRACTICE ENGINE
 ========================================================= */
-const TYPE_LABEL = {which:"WHICH TENSE?", fill:"FILL THE GAP", type:"TYPE THE FORM", error:"ERROR HUNT", ielts:"IELTS DRILL"};
+const TYPE_LABEL = {which:"WHICH TENSE?", fill:"FILL THE GAP", type:"TYPE THE FORM", error:"ERROR HUNT", ielts:"IELTS DRILL", lesson:"LESSONS"};
 const PR = { mode:"mixed", len:10, queue:[], idx:0, score:0, streak:0, answered:false, perTense:{}, missed:[] };
 const quizArea = $('#quiz-area');
 
@@ -336,7 +318,7 @@ function showResults(){
   if(pct>=90){title="Band 8 material.";msg="Near-perfect accuracy. Switch modes or raise the length to 40 to keep the edge sharp.";}
   else if(pct>=70){title="Strong work.";msg="Solid grasp — study the review below: each missed item names its rule.";}
   else if(pct>=50){title="Getting there.";msg="The foundation is forming. Re-read the tenses you missed most, then run this mode again.";}
-  else {title="Good start.";msg="Head back to Learn for the tricky ones — the full breakdowns explain every rule you met here.";}
+  else {title="Good start.";msg="Head back to Learn — the lessons explain every rule you met here.";}
 
   const bd = Object.entries(PR.perTense).map(([tid,d])=>{
     const p=Math.round(d.c/d.t*100);
@@ -379,45 +361,82 @@ function showResults(){
 ========================================================= */
 const gamesArea = $('#games-area');
 const MCQ_POOL = () => BANK.filter(q=>q.type!=='type');
-let SPRINT = {timer:null, left:60, score:0, on:false};
+let SPRINT = {timer:null, left:60, dur:60, score:0, on:false};
 let SURV = {on:false, lives:3, streak:0, queue:[], idx:0};
+
+const sprintBest = d => (S.best.sprintBy||{})[d] || 0;
+const fmtDur = d => d % 60 === 0 ? (d/60)+' min' : d+'s';
+
+function hubRow(icon, title, desc, side){
+  return `<div class="hub-row">
+    <span class="hub-ic">${icon}</span>
+    <div class="hub-main"><h3>${title}</h3><p>${desc}</p></div>
+    <div class="hub-side">${side}</div>
+  </div>`;
+}
 
 function renderGamesHub(){
   stopSprint(); SURV.on=false;
-  gamesArea.innerHTML = `
-    <div class="game-grid">
-      <div class="game-card">
-        <div class="gicon">⚡</div><h3>Sprint 60</h3>
-        <p>Sixty seconds, as many correct answers as you can. Wrong answers cost nothing but time — speed and instinct win.</p>
-        <div class="best">BEST&nbsp;<b>${S.best.sprint}</b></div>
-        <button class="btn" id="startSprint">Start sprint →</button>
-      </div>
-      <div class="game-card">
-        <div class="gicon">🃏</div><h3>Match pairs</h3>
-        <p>Six sentences, six tenses. Match every sentence to its tense — mistakes shake the board and count against you.</p>
-        <div class="best">CLEAN ROUNDS&nbsp;<b>${S.best.match||0}</b></div>
-        <button class="btn" id="startMatch">Start matching →</button>
-      </div>
-      <div class="game-card">
-        <div class="gicon">🛡️</div><h3>Survival</h3>
-        <p>Three lives, endless questions from all five drill types. One streak, no mercy. How far can you go?</p>
-        <div class="best">BEST STREAK&nbsp;<b>${S.best.survival}</b></div>
-        <button class="btn" id="startSurv">Start survival →</button>
-      </div>
-    </div>`;
-  $('#startSprint').addEventListener('click', startSprint);
+  gamesArea.innerHTML = `<div class="hub">
+    ${hubRow(I.zap, 'Sprint',
+      'Race the clock — you pick how long, from 10 seconds to 10 minutes. Wrong answers cost nothing but time.',
+      `<span class="hub-best">Best <b>${sprintBest(S.sprintDur)}</b> · ${fmtDur(S.sprintDur)}</span><button class="btn" id="startSprint">Play</button>`)}
+    ${hubRow(I.layers, 'Match pairs',
+      'Six sentences, six tenses. Match every sentence to its tense — mistakes shake the board and count against you.',
+      `<span class="hub-best">Clean rounds <b>${S.best.match||0}</b></span><button class="btn" id="startMatch">Play</button>`)}
+    ${hubRow(I.shield, 'Survival',
+      'Three lives, endless questions from all five drill types. One streak, no mercy. How far can you go?',
+      `<span class="hub-best">Best streak <b>${S.best.survival||0}</b></span><button class="btn" id="startSurv">Play</button>`)}
+  </div>`;
+  $('#startSprint').addEventListener('click', renderSprintSetup);
   $('#startMatch').addEventListener('click', startMatch);
   $('#startSurv').addEventListener('click', startSurvival);
 }
 
-/* --- Sprint 60 --- */
+/* --- Sprint --- */
 function stopSprint(){ if(SPRINT.timer){ clearInterval(SPRINT.timer); SPRINT.timer=null; } SPRINT.on=false; }
-function startSprint(){
+
+function renderSprintSetup(){
   stopSprint();
-  SPRINT = {timer:null, left:60, score:0, on:true, queue:shuffle(MCQ_POOL()), idx:0};
+  const durs = [30, 60, 90, 120];
+  let sel = S.sprintDur || 60;
+  gamesArea.innerHTML = `
+    <div class="g-setup">
+      <p class="overline">Sprint</p>
+      <h2>How much time do you want?</h2>
+      <p class="section-sub">Pick a preset or type your own — anything from 10 to 600 seconds. Bests are saved per duration.</p>
+      <div class="dur-row">
+        ${durs.map(d=>`<button class="dur-chip ${d===sel?'active':''}" data-d="${d}">${d}s</button>`).join('')}
+        <input class="dur-custom" id="durCustom" type="number" min="10" max="600" placeholder="Custom (s)" value="${durs.includes(sel)?'':sel}">
+      </div>
+      <div class="setup-best" id="setupBest"></div>
+      <div class="setup-actions">
+        <button class="btn" id="sprintGo">Start sprint →</button>
+        <button class="btn ghost" id="sprintBack">All games</button>
+      </div>
+    </div>`;
+  const upd = ()=>{ $('#setupBest').innerHTML = `Your best for ${fmtDur(sel)} · <b>${sprintBest(sel)}</b>`; };
+  upd();
+  $$('.dur-chip').forEach(c=>c.addEventListener('click', ()=>{
+    sel = +c.dataset.d;
+    $('#durCustom').value='';
+    $$('.dur-chip').forEach(x=>x.classList.toggle('active', x===c));
+    upd();
+  }));
+  $('#durCustom').addEventListener('input', e=>{
+    const v = Math.round(+e.target.value);
+    if(v>=10 && v<=600){ sel=v; $$('.dur-chip').forEach(x=>x.classList.remove('active')); upd(); }
+  });
+  $('#sprintGo').addEventListener('click', ()=>{ S.sprintDur=sel; saveS(); beginSprint(sel); });
+  $('#sprintBack').addEventListener('click', renderGamesHub);
+}
+
+function beginSprint(dur){
+  stopSprint();
+  SPRINT = {timer:null, left:dur, dur, score:0, on:true, queue:shuffle(MCQ_POOL()), idx:0};
   gamesArea.innerHTML = `
     <div class="game-head">
-      <div class="ginfo"><span>SCORE <b id="spScore">0</b></span><span>TIME <b id="spTime">60</b>s</span><span>BEST <b>${S.best.sprint}</b></span></div>
+      <div class="ginfo"><span>Score <b id="spScore">0</b></span><span>Time <b id="spTime">${dur}</b>s</span><span>Best <b>${sprintBest(dur)}</b></span></div>
       <button class="btn ghost" id="spQuit">Quit</button>
     </div>
     <div class="timer-track"><div class="timer-fill" id="spFill"></div></div>
@@ -427,7 +446,7 @@ function startSprint(){
     SPRINT.left--;
     const f = $('#spFill'), t = $('#spTime');
     if(t) t.textContent = SPRINT.left;
-    if(f){ f.style.width = (SPRINT.left/60*100)+'%'; if(SPRINT.left<=10) f.classList.add('low'); }
+    if(f){ f.style.width = (SPRINT.left/SPRINT.dur*100)+'%'; if(SPRINT.left<=10) f.classList.add('low'); }
     if(SPRINT.left<=0) endSprint();
   }, 1000);
   renderSprintQ();
@@ -465,21 +484,23 @@ function renderSprintQ(){
   }));
 }
 function endSprint(){
-  const score = SPRINT.score;
+  const score = SPRINT.score, dur = SPRINT.dur;
   stopSprint();
-  const newBest = score > (S.best.sprint||0);
-  if(newBest){ S.best.sprint = score; saveS(); }
+  const newBest = score > sprintBest(dur);
+  if(newBest){ S.best.sprintBy[dur] = score; saveS(); }
   gamesArea.innerHTML = `
     <div class="game-over">
       <div class="big">${score}</div>
-      ${newBest?'<div class="newbest">NEW BEST</div>':''}
-      <p>${score>=15?'Machine-gun grammar. Seriously impressive.':score>=8?'Strong pace — accuracy under pressure is exactly what the exam tests.':'Speed comes with reps. One more run?'}</p>
-      <div class="results-actions" style="margin-top:22px">
+      ${newBest?`<div class="newbest">NEW BEST · ${fmtDur(dur)}</div>`:''}
+      <p>${score>=dur/4?'Machine-gun grammar. Seriously impressive.':score>=dur/8?'Strong pace — accuracy under pressure is exactly what the exam tests.':'Speed comes with reps. One more run?'}</p>
+      <div class="results-actions" style="margin-top:28px">
         <button class="btn" id="spAgain">Run it again →</button>
+        <button class="btn ghost" id="spSetup">Change time</button>
         <button class="btn ghost" id="spBack">All games</button>
       </div>
     </div>`;
-  $('#spAgain').addEventListener('click', startSprint);
+  $('#spAgain').addEventListener('click', ()=>beginSprint(dur));
+  $('#spSetup').addEventListener('click', renderSprintSetup);
   $('#spBack').addEventListener('click', renderGamesHub);
 }
 
@@ -495,7 +516,7 @@ function startMatch(){
 
   gamesArea.innerHTML = `
     <div class="game-head">
-      <div class="ginfo"><span>PAIRS <b id="mDone">0</b>/6</span><span>MISTAKES <b id="mMist">0</b></span></div>
+      <div class="ginfo"><span>Pairs <b id="mDone">0</b>/6</span><span>Mistakes <b id="mMist">0</b></span></div>
       <button class="btn ghost" id="mQuit">Quit</button>
     </div>
     <div class="match-grid">
@@ -525,7 +546,7 @@ function startMatch(){
                 <div class="big">6/6</div>
                 ${mistakes===0?'<div class="newbest">CLEAN ROUND</div>':''}
                 <p>${mistakes===0?'Flawless — not a single wrong pairing.':`Done with ${mistakes} mistake${mistakes>1?'s':''}. Clean rounds are counted — try for one.`}</p>
-                <div class="results-actions" style="margin-top:22px">
+                <div class="results-actions" style="margin-top:28px">
                   <button class="btn" id="mAgain">New board →</button>
                   <button class="btn ghost" id="mBack">All games</button>
                 </div>
@@ -547,6 +568,9 @@ function startMatch(){
 }
 
 /* --- Survival --- */
+function livesHTML(n){
+  return Array.from({length:3},(_,i)=>`<span class="${i<n?'':'off'}">${I.heart}</span>`).join('');
+}
 function startSurvival(){
   stopSprint();
   SURV = {on:true, lives:3, streak:0, queue:shuffle(MCQ_POOL()), idx:0};
@@ -558,9 +582,9 @@ function renderSurvQ(){
   const {text, list, correctVal} = miniQ(q);
   gamesArea.innerHTML = `
     <div class="game-head">
-      <div class="ginfo"><span>STREAK <b>${SURV.streak}</b></span><span>BEST <b>${S.best.survival}</b></span></div>
-      <div style="display:flex;gap:14px;align-items:center">
-        <span class="lives">${'❤️'.repeat(SURV.lives)}${'🖤'.repeat(3-SURV.lives)}</span>
+      <div class="ginfo"><span>Streak <b>${SURV.streak}</b></span><span>Best <b>${S.best.survival}</b></span></div>
+      <div style="display:flex;gap:16px;align-items:center">
+        <span class="lives">${livesHTML(SURV.lives)}</span>
         <button class="btn ghost" id="svQuit">Quit</button>
       </div>
     </div>
@@ -589,6 +613,8 @@ function renderSurvQ(){
       const fb = $('#svFb');
       fb.className='feedback show no';
       fb.innerHTML = `<span class="verdict">−1 life · the answer is “${correctVal}”</span>${q.why}`;
+      const hearts = gamesArea.querySelector('.lives');
+      if(hearts) hearts.innerHTML = livesHTML(SURV.lives);
       if(SURV.lives<=0){ setTimeout(endSurvival, 1600); }
       else {
         SURV.idx++; if(SURV.idx>=SURV.queue.length){ SURV.queue=shuffle(SURV.queue); SURV.idx=0; }
@@ -607,7 +633,7 @@ function endSurvival(){
       <div class="big">${streak}</div>
       ${newBest?'<div class="newbest">NEW BEST STREAK</div>':''}
       <p>${streak>=20?'That is a monstrous streak. Examiner-proof.':streak>=10?'Double digits — your instincts are getting sharp.':'Every run teaches a rule. Check the misses in Practice mode, then come back.'}</p>
-      <div class="results-actions" style="margin-top:22px">
+      <div class="results-actions" style="margin-top:28px">
         <button class="btn" id="svAgain">One more life →</button>
         <button class="btn ghost" id="svBack">All games</button>
       </div>
@@ -621,6 +647,7 @@ function endSurvival(){
 ========================================================= */
 const cardsArea = $('#cards-area');
 const FC = { session:null };
+const DECK_ICONS = { triggers:I.target, verbs:I.zap, signals:I.compass };
 
 function deckProgress(deck){
   const prog = S.decks[deck.id] || {};
@@ -629,16 +656,11 @@ function deckProgress(deck){
 }
 function renderDecks(){
   FC.session = null;
-  cardsArea.innerHTML = `<div class="deck-grid">` + DECKS.map(d=>{
+  cardsArea.innerHTML = `<div class="hub">` + DECKS.map(d=>{
     const p = deckProgress(d);
-    return `<div class="deck-card">
-      <div class="gicon">${d.icon}</div>
-      <h3>${d.name}</h3>
-      <p>${d.desc}</p>
-      <div class="deck-meta">${p.mastered}/${p.total} MASTERED</div>
-      <div class="track"><i style="width:${p.pct}%"></i></div>
-      <button class="btn" data-deck="${d.id}">Study →</button>
-    </div>`;
+    return hubRow(DECK_ICONS[d.id]||I.target, d.name, d.desc,
+      `<div class="deck-prog"><span class="deck-meta-line">${p.mastered}/${p.total} mastered</span><span class="deck-track"><i style="width:${p.pct}%"></i></span></div>
+       <button class="btn" data-deck="${d.id}">Study</button>`);
   }).join('') + `</div>`;
   cardsArea.querySelectorAll('[data-deck]').forEach(b=>b.addEventListener('click', ()=>startDeck(b.dataset.deck)));
 }
@@ -671,16 +693,16 @@ function renderCard(){
   const card = s.deck.cards[idx];
   cardsArea.innerHTML = `
     <div class="fc-stage">
-      <div class="fc-top"><span>${s.deck.icon} ${s.deck.name}</span><span>LEFT <b>${s.queue.length}</b></span></div>
+      <div class="fc-top"><span>${s.deck.name}</span><span>Left <b>${s.queue.length}</b></span></div>
       <div class="fc-card" id="fcCard">
         <div class="fc-inner">
           <div class="fc-face">
-            <div class="fc-kick">PROMPT</div>
+            <div class="fc-kick">Prompt</div>
             <div class="fc-main">${card.f}</div>
             <div class="fc-flip-hint">click or Space to flip</div>
           </div>
           <div class="fc-face back">
-            <div class="fc-kick">ANSWER</div>
+            <div class="fc-kick">Answer</div>
             <div class="fc-main">${card.b}</div>
             <div class="fc-sub">${card.n||''}</div>
           </div>
@@ -688,7 +710,7 @@ function renderCard(){
       </div>
       <div class="fc-actions">
         <button class="btn again" id="fcNo">1 · Again</button>
-        <button class="btn good" id="fcYes">2 · Got it</button>
+        <button class="btn" id="fcYes">2 · Got it</button>
         <button class="btn ghost" id="fcQuit">End session</button>
       </div>
     </div>`;
@@ -788,7 +810,7 @@ function setupCloze(c){
       if(good) ok++;
       notes += `<div class="cloze-note"><span class="cn-n">${good?'✓':'✕'} ${i+1}.</span><b>${gaps[i].opts[0]}</b> — ${gaps[i].note}</div>`;
     });
-    scoreEl.innerHTML = `SCORE <b>${ok}/${sels.length}</b>`;
+    scoreEl.innerHTML = `Score <b>${ok}/${sels.length}</b>`;
     notesEl.innerHTML = notes;
     notesEl.classList.add('show');
   });
@@ -802,6 +824,8 @@ function renderDash(){
   const acc = S.answered ? Math.round(S.correct/S.answered*100) : 0;
   const mastered = DECKS.reduce((n,d)=>n+deckProgress(d).mastered, 0);
   const totalCards = DECKS.reduce((n,d)=>n+d.cards.length, 0);
+  const lessonsDone = TENSES.filter(t=>S.lessons[t.id] && S.lessons[t.id].done).length;
+  const sprintTop = Math.max(0, ...Object.values(S.best.sprintBy||{}));
 
   const bars = TENSES.map(t=>{
     const st = S.stats.tense[t.id];
@@ -830,29 +854,30 @@ function renderDash(){
 
   area.innerHTML = `
     <div class="dash-top">
+      <div class="dash-stat"><div class="n">Lessons</div><div class="v">${lessonsDone}<span class="u">/${TENSES.length}</span></div></div>
       <div class="dash-stat"><div class="n">Answered</div><div class="v">${S.answered}</div></div>
       <div class="dash-stat"><div class="n">Accuracy</div><div class="v">${acc}<span class="u">%</span></div></div>
-      <div class="dash-stat"><div class="n">Sprint best</div><div class="v">${S.best.sprint||0}</div></div>
+      <div class="dash-stat"><div class="n">Sprint best</div><div class="v">${sprintTop}</div></div>
       <div class="dash-stat"><div class="n">Survival best</div><div class="v">${S.best.survival||0}</div></div>
-      <div class="dash-stat"><div class="n">Cards mastered</div><div class="v">${mastered}<span class="u">/${totalCards}</span></div></div>
+      <div class="dash-stat"><div class="n">Cards</div><div class="v">${mastered}<span class="u">/${totalCards}</span></div></div>
     </div>
     <div class="dash-cols">
       <div class="dash-card"><h3>Accuracy by tense</h3>${bars}</div>
       <div class="dash-card">
         <h3>Hit these first</h3>
         <div class="weak-list">${weakHtml}</div>
-        <h3 style="margin-top:26px">By drill type</h3>
+        <h3 style="margin-top:40px">By activity</h3>
         ${Object.entries(S.stats.mode).filter(([m])=>TYPE_LABEL[m]).map(([m,d])=>{
           const p=Math.round(d.c/d.t*100);
           return `<div class="tense-bar"><div class="tb-head"><span class="tb-name">${TYPE_LABEL[m]}</span><span class="tb-pct">${p}% · ${d.t}</span></div><div class="track"><i style="width:${p}%"></i></div></div>`;
-        }).join('') || '<div class="dash-empty">Run some Practice drills to see per-type stats.</div>'}
+        }).join('') || '<div class="dash-empty">Run some lessons or drills to see per-type stats.</div>'}
       </div>
     </div>
     <div class="dash-reset"><button class="btn ghost" id="resetBtn">Reset all progress</button></div>`;
   area.querySelectorAll('[data-review]').forEach(b=>b.addEventListener('click', ()=>openModalById(b.dataset.review)));
   $('#resetBtn').addEventListener('click', ()=>{
-    if(confirm('Reset all saved progress — stats, bests and flashcard mastery?')){
-      S = { stats:{tense:{},mode:{}}, answered:0, correct:0, best:{sprint:0,survival:0}, decks:{} };
+    if(confirm('Reset all saved progress — lessons, stats, bests and flashcard mastery?')){
+      S = { stats:{tense:{},mode:{}}, answered:0, correct:0, best:{sprint:0,survival:0,sprintBy:{}}, decks:{}, lessons:{}, sprintDur:60 };
       saveS(); renderDash();
     }
   });
@@ -862,6 +887,7 @@ function renderDash(){
    KEYBOARD
 ========================================================= */
 document.addEventListener('keydown', e=>{
+  if(typeof LSN !== 'undefined' && LSN.on) return; /* lesson overlay handles its own keys */
   if(e.key==='Escape'){ closeModal(); return; }
   const tag = e.target.tagName;
   if(tag==='INPUT' || tag==='SELECT' || tag==='TEXTAREA') return;
