@@ -1,0 +1,867 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Tense Lab — Master 6 English Tenses</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#171717;
+    --white:#ffffff;
+    --g600:#4d4d4d;
+    --g500:#666666;
+    --g400:#808080;
+    --g100:#ebebeb;
+    --g50:#fafafa;
+    --border:rgba(0,0,0,.08);
+    --border-l:rgb(235,235,235);
+    --blue:#0070f3;
+    --link:#0072f5;
+    --focus:hsla(212,100%,48%,1);
+    --red:#ff5b4f;
+    --pink:#de1d8d;
+    --ff:"Geist",Arial,sans-serif;
+    --mono:"Geist Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+    --ring:0 0 0 1px rgba(0,0,0,.08);
+    --card-sh:rgba(0,0,0,.08) 0 0 0 1px, rgba(0,0,0,.04) 0 2px 2px, rgba(0,0,0,.04) 0 8px 8px -8px, #fafafa 0 0 0 1px inset;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    background:var(--white);
+    color:var(--ink);
+    font-family:var(--ff);
+    font-feature-settings:"liga" 1;
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+    min-height:100vh;
+  }
+  ::selection{background:#171717;color:#fff}
+  .wrap{max-width:1160px;margin:0 auto;padding:0 24px}
+  a{color:var(--link)}
+
+  /* ---------- Header ---------- */
+  header{border-bottom:1px solid var(--g100)}
+  .nav{display:flex;align-items:center;justify-content:space-between;padding:18px 0}
+  .brand{display:flex;align-items:center;gap:11px}
+  .logo{
+    width:30px;height:30px;border-radius:7px;background:var(--ink);
+    display:grid;place-items:center;color:#fff;font-weight:600;font-size:15px;
+    letter-spacing:-.04em
+  }
+  .brand .name{font-weight:600;font-size:15px;letter-spacing:-.02em}
+  .brand .name span{color:var(--g400);font-weight:400}
+  .nav .eyebrow{font-family:var(--mono);font-size:12px;color:var(--g500);text-transform:uppercase;letter-spacing:.02em}
+
+  .hero{padding:76px 0 60px;border-bottom:1px solid var(--g100)}
+  .hero .kick{font-family:var(--mono);font-size:12px;text-transform:uppercase;color:var(--g500);letter-spacing:.04em;margin-bottom:22px}
+  .hero h1{
+    font-weight:600;font-size:clamp(38px,6.5vw,64px);line-height:1.02;
+    letter-spacing:-.032em;max-width:15ch;color:var(--ink)
+  }
+  .hero p{color:var(--g600);font-size:clamp(16px,2vw,20px);line-height:1.6;max-width:56ch;margin-top:22px}
+  .hero .meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:30px}
+  .chip{
+    font-size:13px;color:var(--g600);background:var(--white);box-shadow:var(--ring);
+    padding:6px 13px;border-radius:9999px;font-weight:500;display:inline-flex;align-items:center;gap:7px
+  }
+  .chip b{color:var(--ink);font-weight:600}
+  .chip .n{font-family:var(--mono);color:var(--blue)}
+
+  /* ---------- Tabs ---------- */
+  .tabs{position:sticky;top:0;z-index:40;background:rgba(255,255,255,.85);backdrop-filter:blur(12px);border-bottom:1px solid var(--g100)}
+  .tabs-inner{display:flex;gap:6px;max-width:1160px;margin:0 auto;padding:11px 20px;overflow-x:auto}
+  .tab{
+    border:none;background:transparent;color:var(--g500);font-family:var(--ff);
+    font-size:14px;font-weight:500;letter-spacing:-.01em;padding:8px 15px;border-radius:64px;
+    cursor:pointer;white-space:nowrap;transition:.16s
+  }
+  .tab:hover{color:var(--ink);background:var(--g50)}
+  .tab.active{color:#fff;background:var(--ink)}
+
+  .panel{display:none;animation:fade .3s ease}
+  .panel.active{display:block}
+  @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+  main{padding:56px 0}
+  .section-head{margin-bottom:28px}
+  .section-head h2{font-weight:600;font-size:32px;letter-spacing:-.028em;line-height:1.2}
+  .section-head p{color:var(--g500);font-size:16px;margin-top:8px;max-width:60ch}
+
+  /* ---------- Learn cards ---------- */
+  .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+  @media(max-width:760px){.grid{grid-template-columns:1fr}}
+  .card{
+    background:var(--white);border-radius:8px;box-shadow:var(--card-sh);
+    padding:24px;cursor:pointer;transition:transform .18s,box-shadow .18s;text-align:left;
+    display:flex;flex-direction:column
+  }
+  .card:hover{transform:translateY(-2px);box-shadow:rgba(0,0,0,.1) 0 0 0 1px, rgba(0,0,0,.06) 0 4px 8px, rgba(0,0,0,.06) 0 12px 20px -8px, #fafafa 0 0 0 1px inset}
+  .card .num{font-family:var(--mono);font-size:12px;color:var(--g400);letter-spacing:.06em;text-transform:uppercase}
+  .card h3{font-weight:600;font-size:24px;letter-spacing:-.03em;margin:10px 0 5px;line-height:1.2}
+  .card .gloss{color:var(--g600);font-size:15px;line-height:1.5}
+  .card .ex{
+    margin-top:16px;font-family:var(--mono);font-size:13px;color:var(--ink);
+    background:var(--g50);box-shadow:var(--ring);border-radius:6px;padding:11px 13px;line-height:1.6
+  }
+  .card .ex .hl{color:var(--blue);font-weight:500}
+  .card .open{margin-top:18px;font-size:13px;color:var(--g500);font-weight:500;display:flex;align-items:center;gap:6px}
+  .card:hover .open{color:var(--ink)}
+
+  /* ---------- Modal ---------- */
+  .modal-bg{
+    position:fixed;inset:0;background:hsla(0,0%,98%,.72);backdrop-filter:blur(6px);
+    z-index:80;display:none;align-items:flex-start;justify-content:center;padding:44px 18px;overflow-y:auto
+  }
+  .modal-bg.open{display:flex;animation:fade .22s}
+  .modal{
+    background:var(--white);border-radius:12px;max-width:680px;width:100%;
+    box-shadow:rgba(0,0,0,.12) 0 0 0 1px, rgba(0,0,0,.08) 0 12px 32px -8px, #fafafa 0 0 0 1px inset;
+    overflow:hidden;animation:pop .26s cubic-bezier(.2,.9,.3,1.05)
+  }
+  @keyframes pop{from{opacity:0;transform:scale(.98) translateY(8px)}to{opacity:1;transform:none}}
+  .modal-top{padding:28px 30px 22px;border-bottom:1px solid var(--g100);position:relative}
+  .modal .num{font-family:var(--mono);font-size:12px;color:var(--g400);letter-spacing:.08em;text-transform:uppercase}
+  .modal h3{font-weight:600;font-size:34px;letter-spacing:-.032em;margin:8px 0 6px;line-height:1.1}
+  .modal .gloss{color:var(--g600);font-size:16px;line-height:1.5}
+  .close{
+    position:absolute;top:22px;right:22px;width:32px;height:32px;border-radius:6px;
+    background:var(--white);box-shadow:var(--ring);color:var(--g500);cursor:pointer;font-size:15px;
+    display:grid;place-items:center;transition:.15s
+  }
+  .close:hover{background:var(--g50);color:var(--ink)}
+  .modal-body{padding:24px 30px 32px}
+  .block{margin-bottom:26px}
+  .block:last-child{margin-bottom:0}
+  .block h4{
+    font-family:var(--mono);font-size:12px;text-transform:uppercase;letter-spacing:.06em;
+    color:var(--g500);font-weight:500;margin-bottom:12px
+  }
+  .formula{
+    font-family:var(--mono);font-size:14px;background:var(--g50);box-shadow:var(--ring);
+    border-radius:8px;padding:15px 17px;color:var(--ink);line-height:1.8
+  }
+  .formula .k{color:var(--blue);font-weight:500}
+  .uselist{list-style:none;display:flex;flex-direction:column;gap:12px}
+  .uselist li{display:flex;gap:12px;font-size:15px;color:var(--g600);align-items:flex-start;line-height:1.5}
+  .uselist li:before{content:"";flex:none;width:6px;height:6px;border-radius:50%;background:var(--ink);margin-top:8px}
+  .uselist li b{color:var(--ink);font-weight:600}
+  .exlist{display:flex;flex-direction:column;gap:10px}
+  .exs{
+    font-family:var(--mono);font-size:13.5px;line-height:1.6;color:var(--ink);
+    background:var(--g50);box-shadow:var(--ring);border-radius:8px;padding:11px 14px
+  }
+  .exs .hl{color:var(--blue);font-weight:500}
+  .exs .note{display:block;font-family:var(--ff);color:var(--g500);font-size:13px;margin-top:4px}
+  .signals{display:flex;flex-wrap:wrap;gap:8px}
+  .signal{
+    font-family:var(--mono);font-size:12.5px;color:var(--g600);background:var(--white);
+    box-shadow:var(--ring);padding:5px 11px;border-radius:9999px
+  }
+  .warn{background:var(--white);box-shadow:var(--ring);border-radius:8px;padding:14px 16px;font-size:14.5px;color:var(--g600);line-height:1.6}
+  .warn b.x{color:var(--red);font-weight:600}
+  .warn .fix{color:var(--ink);font-weight:600}
+
+  /* ---------- Timeline ---------- */
+  .tl-wrap{background:var(--white);box-shadow:var(--card-sh);border-radius:12px;padding:30px 28px}
+  .tl-ends{display:flex;justify-content:space-between;font-family:var(--mono);font-size:12px;color:var(--g400);letter-spacing:.06em;text-transform:uppercase}
+  .tl-axis{position:relative;height:1px;background:var(--g100);margin:54px 0 20px}
+  .tl-now{position:absolute;left:50%;top:-10px;bottom:-10px;width:2px;background:var(--blue);transform:translateX(-50%)}
+  .tl-now span{position:absolute;top:-28px;left:50%;transform:translateX(-50%);font-family:var(--mono);font-size:11px;color:var(--blue);white-space:nowrap;letter-spacing:.08em}
+  .tl-marks{position:relative;height:154px;margin-top:8px}
+  .tl-mark{position:absolute;transform:translateX(-50%);text-align:center;width:132px}
+  .tl-mark .bar{width:1px;height:16px;background:var(--ink);margin:0 auto 8px}
+  .tl-mark .lbl{font-weight:600;font-size:15px;letter-spacing:-.02em;line-height:1.2}
+  .tl-mark .sub{font-family:var(--mono);font-size:11px;color:var(--g400);margin-top:4px}
+  @media(max-width:760px){
+    .tl-marks{height:auto;display:flex;flex-direction:column;gap:14px}
+    .tl-mark{position:static!important;transform:none;width:auto;text-align:left;display:flex;gap:10px;align-items:center}
+    .tl-mark .bar{height:1px;width:16px;margin:0}
+    .tl-axis{display:none}
+  }
+  .tl-legend{margin-top:26px;border-top:1px solid var(--g100);padding-top:20px;font-size:15px;color:var(--g600);line-height:1.65}
+  .tl-legend b{color:var(--ink)}
+
+  /* Compare table */
+  .cmp{margin-top:20px;border-radius:8px;box-shadow:var(--ring);overflow:hidden}
+  .cmp-scroll{overflow-x:auto}
+  table{width:100%;border-collapse:collapse;min-width:600px}
+  th,td{text-align:left;padding:14px 16px;font-size:14px;border-bottom:1px solid var(--g100);vertical-align:top}
+  th{background:var(--g50);color:var(--g500);font-weight:500;font-size:12px;text-transform:uppercase;letter-spacing:.05em;font-family:var(--mono)}
+  td:first-child{font-weight:600;color:var(--ink);letter-spacing:-.01em}
+  td .m{font-family:var(--mono);font-size:13px;color:var(--g600)}
+  td .m b{color:var(--blue);font-weight:500}
+  tr:last-child td{border-bottom:none}
+
+  /* ---------- Practice ---------- */
+  .pr-top{display:flex;flex-wrap:wrap;gap:14px;align-items:center;justify-content:space-between;margin-bottom:22px}
+  .modes{display:flex;gap:4px;background:var(--white);box-shadow:var(--ring);border-radius:8px;padding:4px}
+  .mode{
+    border:none;background:transparent;color:var(--g500);font-family:var(--ff);font-weight:500;
+    font-size:13.5px;padding:8px 15px;border-radius:6px;cursor:pointer;transition:.15s;letter-spacing:-.01em
+  }
+  .mode:hover{color:var(--ink)}
+  .mode.active{background:var(--ink);color:#fff}
+  .stats{display:flex;gap:14px;align-items:center;font-family:var(--mono);font-size:13px}
+  .stat{color:var(--g400)}
+  .stat b{color:var(--ink);font-weight:500}
+  .stat.streak b{color:var(--blue)}
+
+  .progress-track{height:4px;background:var(--g100);border-radius:4px;overflow:hidden;margin-bottom:24px}
+  .progress-fill{height:100%;width:0;background:var(--ink);transition:width .4s}
+
+  .q-card{background:var(--white);box-shadow:var(--card-sh);border-radius:12px;padding:32px 30px}
+  .q-kicker{font-family:var(--mono);font-size:12px;color:var(--g400);letter-spacing:.05em;text-transform:uppercase;margin-bottom:16px}
+  .q-kicker .situ{color:var(--blue)}
+  .q-text{font-weight:600;font-size:clamp(22px,3.4vw,30px);line-height:1.32;letter-spacing:-.028em}
+  .q-text .gap{color:var(--blue);border-bottom:2px solid rgba(0,112,243,.28);padding-bottom:1px}
+  .q-hint{color:var(--g500);font-size:14px;margin-top:12px}
+  .opts{display:grid;gap:10px;margin-top:26px}
+  .opts.two{grid-template-columns:1fr 1fr}
+  @media(max-width:560px){.opts.two{grid-template-columns:1fr}}
+  .opt{
+    text-align:left;background:var(--white);box-shadow:var(--ring);color:var(--ink);
+    font-family:var(--ff);font-size:15px;font-weight:500;letter-spacing:-.01em;
+    padding:15px 17px;border-radius:8px;cursor:pointer;transition:.14s;
+    display:flex;align-items:center;gap:12px
+  }
+  .opt .key{
+    font-family:var(--mono);font-size:12px;color:var(--g400);box-shadow:var(--ring);
+    border-radius:5px;width:22px;height:22px;display:grid;place-items:center;flex:none
+  }
+  .opt:hover:not(:disabled){box-shadow:0 0 0 1px rgba(0,0,0,.18);background:var(--g50)}
+  .opt:disabled{cursor:default}
+  .opt.correct{box-shadow:0 0 0 1.5px var(--blue);background:#f5f9ff}
+  .opt.correct .key{box-shadow:0 0 0 1px var(--blue);color:var(--blue)}
+  .opt.wrong{box-shadow:0 0 0 1.5px var(--red);background:#fff6f5}
+  .opt.wrong .key{box-shadow:0 0 0 1px var(--red);color:var(--red)}
+  .opt .mark{margin-left:auto;font-size:14px;font-weight:600;opacity:0}
+  .opt.correct .mark{opacity:1;color:var(--blue)}
+  .opt.wrong .mark{opacity:1;color:var(--red)}
+
+  .feedback{margin-top:22px;border-radius:8px;padding:16px 18px;font-size:15px;line-height:1.6;display:none;animation:fade .22s;color:var(--g600)}
+  .feedback.show{display:block}
+  .feedback.ok{background:#f5f9ff;box-shadow:0 0 0 1px rgba(0,112,243,.22)}
+  .feedback.no{background:#fff6f5;box-shadow:0 0 0 1px rgba(255,91,79,.24)}
+  .feedback .verdict{font-weight:600;display:block;margin-bottom:5px;font-size:15px;letter-spacing:-.01em}
+  .feedback.ok .verdict{color:var(--blue)}
+  .feedback.no .verdict{color:var(--red)}
+  .feedback .tag{display:inline-block;font-family:var(--mono);font-size:12px;color:var(--g600);background:var(--white);box-shadow:var(--ring);padding:2px 9px;border-radius:9999px;margin-top:10px}
+  .next-row{display:flex;justify-content:flex-end;margin-top:22px}
+  .btn{
+    background:var(--ink);color:#fff;border:none;font-family:var(--ff);font-weight:500;
+    font-size:14px;letter-spacing:-.01em;padding:10px 18px;border-radius:6px;cursor:pointer;
+    transition:.15s;display:inline-flex;align-items:center;gap:8px
+  }
+  .btn:hover{background:#000}
+  .btn.ghost{background:var(--white);color:var(--ink);box-shadow:var(--ring)}
+  .btn.ghost:hover{background:var(--g50)}
+  .btn:disabled{opacity:.4;cursor:default}
+  .btn:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+
+  /* Results */
+  .results{background:var(--white);box-shadow:var(--card-sh);border-radius:12px;padding:44px 32px;text-align:center}
+  .results .score{font-weight:600;font-size:64px;letter-spacing:-.04em;line-height:1}
+  .results .score .of{color:var(--g400);font-size:30px}
+  .results h3{font-weight:600;font-size:26px;letter-spacing:-.03em;margin:16px 0 6px}
+  .results p{color:var(--g600);font-size:16px;max-width:46ch;margin:0 auto 8px;line-height:1.6}
+  .breakdown{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin:30px 0;text-align:left}
+  .bd{background:var(--white);box-shadow:var(--ring);border-radius:8px;padding:14px 16px}
+  .bd .n{font-family:var(--mono);font-size:11.5px;color:var(--g500);text-transform:uppercase;letter-spacing:.04em}
+  .bd .v{font-weight:600;font-size:22px;margin-top:4px;letter-spacing:-.02em}
+  .bd .track{height:3px;background:var(--g100);border-radius:3px;margin-top:10px;overflow:hidden}
+  .bd .track i{display:block;height:100%;background:var(--ink);border-radius:3px}
+  .results-actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:8px}
+
+  footer{border-top:1px solid var(--g100);padding:40px 0 60px;text-align:center;color:var(--g500);font-size:13px}
+  footer .kbd{font-family:var(--mono);font-size:11px;background:var(--white);box-shadow:var(--ring);padding:2px 7px;border-radius:5px;color:var(--g600)}
+
+  .hidden{display:none!important}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <div class="nav">
+      <div class="brand">
+        <div class="logo">T</div>
+        <div class="name">Tense&nbsp;Lab <span>/ tenses</span></div>
+      </div>
+      <div class="eyebrow">6 TENSES · ONE SYSTEM</div>
+    </div>
+  </div>
+  <div class="wrap">
+    <div class="hero">
+      <div class="kick">ENGLISH GRAMMAR · CORE ENGINE</div>
+      <h1>Master the 6 core English tenses.</h1>
+      <p>Study each tense in plain English, place it on a single timeline, then drill with real everyday sentences until it clicks. When, where, and how — for every tense.</p>
+      <div class="meta">
+        <div class="chip"><span class="n">6</span> tenses</div>
+        <div class="chip"><span class="n">36</span> practice sentences</div>
+        <div class="chip">Instant feedback</div>
+        <div class="chip">Everyday situations only</div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<nav class="tabs">
+  <div class="tabs-inner">
+    <button class="tab active" data-tab="learn">Learn</button>
+    <button class="tab" data-tab="timeline">Timeline</button>
+    <button class="tab" data-tab="compare">Compare</button>
+    <button class="tab" data-tab="practice">Practice</button>
+  </div>
+</nav>
+
+<main class="wrap">
+
+  <!-- LEARN -->
+  <section class="panel active" id="learn">
+    <div class="section-head">
+      <h2>The six tenses</h2>
+      <p>Open any card for the full breakdown: how to build it, when to use it, everyday examples, signal words, and the mistake to avoid.</p>
+    </div>
+    <div class="grid" id="cards"></div>
+  </section>
+
+  <!-- TIMELINE -->
+  <section class="panel" id="timeline">
+    <div class="section-head">
+      <h2>Where each tense lives in time</h2>
+      <p>The single most useful mental map. Everything is measured from NOW.</p>
+    </div>
+    <div class="tl-wrap">
+      <div class="tl-ends"><span>◄ PAST</span><span>FUTURE ►</span></div>
+      <div class="tl-axis"><div class="tl-now"><span>NOW</span></div></div>
+      <div class="tl-marks" id="tlmarks"></div>
+      <div class="tl-legend">
+        <b>Read it like this:</b> Present Simple &amp; Continuous sit around <i>now</i>. Past Simple is a finished point behind you. Past Continuous is an action <i>in progress</i> in the past. Present Perfect is a bridge — it starts in the past but touches now. Future looks ahead.
+      </div>
+    </div>
+  </section>
+
+  <!-- COMPARE -->
+  <section class="panel" id="compare">
+    <div class="section-head">
+      <h2>Quick compare &amp; decide</h2>
+      <p>The fastest way to pick the right tense: ask "what am I really saying about time?"</p>
+    </div>
+    <div class="cmp"><div class="cmp-scroll"><table id="cmptable"></table></div></div>
+    <div class="section-head" style="margin-top:44px">
+      <h2>Decision shortcuts</h2>
+      <p>Confusing pairs, settled in one line each.</p>
+    </div>
+    <div class="grid" id="tips"></div>
+  </section>
+
+  <!-- PRACTICE -->
+  <section class="panel" id="practice">
+    <div class="section-head">
+      <h2>Practice</h2>
+      <p>Pick the correct tense for real, everyday sentences. You get an explanation after every answer.</p>
+    </div>
+    <div class="pr-top">
+      <div class="modes">
+        <button class="mode active" data-mode="which">Which tense?</button>
+        <button class="mode" data-mode="fill">Fill the gap</button>
+        <button class="mode" data-mode="mixed">Mixed</button>
+      </div>
+      <div class="stats">
+        <span class="stat">Q&nbsp;<b id="qpos">1</b>/<b id="qtotal">10</b></span>
+        <span class="stat">SCORE&nbsp;<b id="score">0</b></span>
+        <span class="stat streak">STREAK&nbsp;<b id="streak">0</b></span>
+      </div>
+    </div>
+    <div class="progress-track"><div class="progress-fill" id="pfill"></div></div>
+    <div id="quiz-area"></div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    Built for focused, fast learning · <span class="kbd">1–4</span> to answer · <span class="kbd">Enter</span> for next · Progress saves automatically.
+  </div>
+</footer>
+
+<div class="modal-bg" id="modalBg"><div class="modal" id="modal"></div></div>
+
+<script>
+/* =========================================================
+   DATA — 6 tenses
+========================================================= */
+const TENSES = [
+  {
+    id:"pres-simple", n:"01",
+    name:"Present Simple",
+    gloss:"Facts, habits, routines, timetables — things generally true.",
+    cardEx:['She <span class="hl">works</span> at a bakery.','I <span class="hl">drink</span> coffee every morning.'],
+    form:'<span class="k">I / you / we / they</span> + base verb<br><span class="k">he / she / it</span> + verb <b>+ s</b><br>Neg: don\'t / doesn\'t + base &nbsp;·&nbsp; Q: do / does + base',
+    use:[
+      ["Habits & routines","things you do regularly. <i>I go to the gym on Mondays.</i>"],
+      ["General facts / truths","<i>Water boils at 100°C. The shop opens at 9.</i>"],
+      ["Timetables & schedules","fixed events. <i>The train leaves at 6pm.</i>"],
+      ["Opinions & states","<i>I like techno. She knows the answer.</i>"]
+    ],
+    examples:[
+      ["I <span class='hl'>check</span> my email every morning.","habit — happens regularly"],
+      ["The gym <span class='hl'>closes</span> at 11pm.","schedule / fixed fact"],
+      ["He <span class='hl'>doesn't eat</span> meat.","general truth about him"],
+      ["<span class='hl'>Do</span> you <span class='hl'>live</span> near here?","asking about a stable fact"]
+    ],
+    signals:["every day","usually","often","always","never","on Mondays","sometimes"],
+    warnBad:"He go to work by bus.",
+    warnFix:"He goes to work by bus.",
+    warnNote:"Don't forget the <b>-s</b> with he / she / it."
+  },
+  {
+    id:"pres-cont", n:"02",
+    name:"Present Continuous",
+    gloss:"Happening right now, or a fixed plan in the near future.",
+    cardEx:['I <span class="hl">am working</span> right now.','We <span class="hl">are meeting</span> him tomorrow.'],
+    form:'<span class="k">am / is / are</span> + verb<b>-ing</b><br>I am · he/she/it is · you/we/they are<br>Neg: am/is/are + not &nbsp;·&nbsp; Q: swap to front',
+    use:[
+      ["Happening now","at this moment. <i>She is calling you.</i>"],
+      ["Around now / temporary","<i>I'm reading a great book</i> (these days, not finished)."],
+      ["Fixed future plans","already arranged. <i>We're flying to Berlin on Friday.</i>"],
+      ["Changing situations","<i>Prices are rising. My English is getting better.</i>"]
+    ],
+    examples:[
+      ["Be quiet — the baby <span class='hl'>is sleeping</span>.","happening at this moment"],
+      ["I <span class='hl'>am meeting</span> a client tomorrow.","planned, arranged future"],
+      ["Why <span class='hl'>are</span> you <span class='hl'>wearing</span> a coat? It's hot.","right now / temporary"],
+      ["More people <span class='hl'>are working</span> from home now.","a trend / changing situation"]
+    ],
+    signals:["now","right now","at the moment","today","this week","currently","tonight"],
+    warnBad:"I am knowing the answer.",
+    warnFix:"I know the answer.",
+    warnNote:"State verbs (<b>know, like, want, believe</b>) usually don't take <b>-ing</b>."
+  },
+  {
+    id:"past-simple", n:"03",
+    name:"Past Simple",
+    gloss:"Finished actions at a specific time in the past.",
+    cardEx:['I <span class="hl">went</span> to Paris last year.','She <span class="hl">saw</span> the film yesterday.'],
+    form:'Regular: verb <b>+ ed</b> (worked, played)<br>Irregular: special forms (go→<b>went</b>, see→<b>saw</b>)<br>Neg: <b>didn\'t</b> + base &nbsp;·&nbsp; Q: <b>did</b> + base',
+    use:[
+      ["Finished past actions","done and over. <i>We watched a movie last night.</i>"],
+      ["A specific past time","<i>I met her in 2019. He called an hour ago.</i>"],
+      ["A sequence of events","<i>I woke up, made coffee, and left.</i>"],
+      ["Past habits / states","<i>As a kid, I played piano.</i>"]
+    ],
+    examples:[
+      ["I <span class='hl'>bought</span> new headphones yesterday.","finished, specific time"],
+      ["We <span class='hl'>didn't go</span> out last weekend.","negative — base verb after didn't"],
+      ["<span class='hl'>Did</span> you <span class='hl'>call</span> her?","question — did + base verb"],
+      ["He <span class='hl'>studied</span> design for three years.","finished period in the past"]
+    ],
+    signals:["yesterday","last week","ago","in 2020","last night","when I was…"],
+    warnBad:"I didn't went home.",
+    warnFix:"I didn't go home.",
+    warnNote:"After <b>did / didn't</b>, use the <b>base verb</b> — the past is already carried by 'did'."
+  },
+  {
+    id:"pres-perfect", n:"04",
+    name:"Present Perfect",
+    gloss:"Past action with a link to now — experience, result, or 'so far'.",
+    cardEx:['I <span class="hl">have finished</span> the task.','<span class="hl">Have</span> you ever <span class="hl">been</span> to Japan?'],
+    form:'<span class="k">have / has</span> + past participle (V3)<br>I/you/we/they <b>have</b> · he/she/it <b>has</b><br>done, seen, been, gone, made…',
+    use:[
+      ["Life experience (no exact time)","<i>I have visited 12 countries.</i>"],
+      ["Past action, result now","<i>I've lost my keys</i> (so I can't get in now)."],
+      ["Started in past, still true","<i>I've lived here for 5 years</i> (and still do)."],
+      ["Recent news / 'just, already, yet'","<i>She has just left. I haven't eaten yet.</i>"]
+    ],
+    examples:[
+      ["I <span class='hl'>have never tried</span> sushi.","experience up to now — no time given"],
+      ["She <span class='hl'>has just finished</span> her shift.","recent, relevant to now"],
+      ["We <span class='hl'>have known</span> each other since 2018.","started in past, still true"],
+      ["<span class='hl'>Have</span> you <span class='hl'>done</span> your homework <span class='hl'>yet</span>?","asking about now-result"]
+    ],
+    signals:["ever","never","just","already","yet","since","for","so far","recently"],
+    warnBad:"I have seen him yesterday.",
+    warnFix:"I saw him yesterday.",
+    warnNote:"With a <b>finished time word</b> (yesterday, last week), use <b>Past Simple</b>, not Present Perfect."
+  },
+  {
+    id:"future", n:"05",
+    name:"Future (will / going to)",
+    gloss:"Predictions, decisions, and plans about the future.",
+    cardEx:['I <span class="hl">will call</span> you later.','I\'m <span class="hl">going to start</span> a startup.'],
+    form:'<span class="k">will</span> + base verb → will go, will help<br><span class="k">be going to</span> + base verb → am/is/are going to<br>Neg: won\'t / not going to',
+    use:[
+      ["will — decision made now","<i>It's cold — I'll close the window.</i>"],
+      ["will — prediction / belief","<i>I think it will rain. You'll love it.</i>"],
+      ["will — promise / offer","<i>I'll help you. I won't tell anyone.</i>"],
+      ["going to — plan / intention","<i>We're going to move abroad.</i>"],
+      ["going to — evidence now","<i>Look at the sky — it's going to rain.</i>"]
+    ],
+    examples:[
+      ["I think our team <span class='hl'>will win</span>.","prediction / opinion"],
+      ["I<span class='hl'>'ll get</span> it — don't worry.","decision made at this moment"],
+      ["We<span class='hl'>'re going to</span> launch in autumn.","already-decided plan"],
+      ["Careful — you<span class='hl'>'re going to</span> drop it!","prediction from evidence now"]
+    ],
+    signals:["tomorrow","next week","soon","later","in the future","I think…","probably"],
+    warnBad:"I will to call you.",
+    warnFix:"I will call you.",
+    warnNote:"After <b>will</b>, use the <b>base verb</b> — never 'will to'."
+  },
+  {
+    id:"past-cont", n:"06",
+    name:"Past Continuous",
+    gloss:"An action in progress in the past — often the background to another event.",
+    cardEx:['I <span class="hl">was watching</span> TV when he called.','They <span class="hl">were sleeping</span> at 2am.'],
+    form:'<span class="k">was / were</span> + verb<b>-ing</b><br>I/he/she/it <b>was</b> · you/we/they <b>were</b><br>Often + <b>when</b> + Past Simple',
+    use:[
+      ["Action in progress in the past","<i>At 8pm I was cooking dinner.</i>"],
+      ["Background to a sudden event","<i>I was walking home when it started to rain.</i>"],
+      ["Two actions at once","<i>She was reading while he was cooking.</i>"],
+      ["Setting a scene / atmosphere","<i>The sun was shining and birds were singing.</i>"]
+    ],
+    examples:[
+      ["I <span class='hl'>was working</span> when you texted me.","longer background action"],
+      ["What <span class='hl'>were</span> you <span class='hl'>doing</span> at 10pm?","in progress at that moment"],
+      ["They <span class='hl'>were arguing</span> the whole evening.","ongoing over a past period"],
+      ["It <span class='hl'>was getting</span> dark, so we left.","developing situation in the past"]
+    ],
+    signals:["while","when","at 8pm","as","all evening","at that moment"],
+    warnBad:"When she called, I cooked dinner.",
+    warnFix:"When she called, I was cooking dinner.",
+    warnNote:"The <b>longer / interrupted</b> action is Past Continuous; the <b>short</b> one is Past Simple."
+  }
+];
+
+const TL = [
+  {ref:"pres-simple", pos:52, sub:"around now"},
+  {ref:"pres-cont",   pos:50, sub:"right now"},
+  {ref:"pres-perfect",pos:38, sub:"past → now"},
+  {ref:"past-simple", pos:22, sub:"a point back"},
+  {ref:"past-cont",   pos:14, sub:"in progress, past"},
+  {ref:"future",      pos:80, sub:"ahead"}
+];
+
+const COMPARE = [
+  ["Present Simple","Habit / fact / schedule","I <b>work</b> from home."],
+  ["Present Continuous","Now / temporary / plan","I <b>am working</b> now."],
+  ["Past Simple","Finished, specific past","I <b>worked</b> yesterday."],
+  ["Present Perfect","Past linked to now","I <b>have worked</b> here for years."],
+  ["Future","Prediction / plan","I <b>will work</b> tomorrow."],
+  ["Past Continuous","In progress in the past","I <b>was working</b> at 9pm."]
+];
+
+const TIPS = [
+  {t:"Present Simple vs Continuous", d:"Simple = always / generally true. Continuous = now or temporary. <i>I play guitar</i> (I'm a guitarist) vs <i>I'm playing guitar</i> (at this moment)."},
+  {t:"Past Simple vs Present Perfect", d:"Got an exact past time? Use Past Simple. No time / still relevant now? Present Perfect. <i>I saw it yesterday</i> vs <i>I have seen it</i>."},
+  {t:"will vs going to", d:"Deciding as you speak → <i>will</i>. Already planned, or clear evidence → <i>going to</i>. <i>I'll get it</i> vs <i>I'm going to quit my job</i>."},
+  {t:"Past Simple vs Past Continuous", d:"The long background action = Continuous. The short interrupting action = Simple. <i>I was sleeping when the alarm rang.</i>"}
+];
+
+/* =========================================================
+   RENDER — Learn cards
+========================================================= */
+const cardsEl = document.getElementById('cards');
+TENSES.forEach((t,i)=>{
+  const c = document.createElement('button');
+  c.className = 'card';
+  c.innerHTML = `
+    <div class="num">TENSE ${t.n}</div>
+    <h3>${t.name}</h3>
+    <div class="gloss">${t.gloss}</div>
+    <div class="ex">${t.cardEx[0]}<br>${t.cardEx[1]}</div>
+    <div class="open">Open full breakdown →</div>`;
+  c.addEventListener('click', ()=>openModal(i));
+  cardsEl.appendChild(c);
+});
+
+/* Modal */
+const modalBg = document.getElementById('modalBg');
+const modalEl = document.getElementById('modal');
+function openModal(i){
+  const t = TENSES[i];
+  modalEl.innerHTML = `
+    <div class="modal-top">
+      <button class="close" aria-label="Close">✕</button>
+      <div class="num">TENSE ${t.n}</div>
+      <h3>${t.name}</h3>
+      <div class="gloss">${t.gloss}</div>
+    </div>
+    <div class="modal-body">
+      <div class="block">
+        <h4>How to build it</h4>
+        <div class="formula">${t.form}</div>
+      </div>
+      <div class="block">
+        <h4>When &amp; where to use it</h4>
+        <ul class="uselist">${t.use.map(u=>`<li><b>${u[0]}</b> — ${u[1]}</li>`).join('')}</ul>
+      </div>
+      <div class="block">
+        <h4>Everyday examples</h4>
+        <div class="exlist">${t.examples.map(e=>`<div class="exs">${e[0]}<span class="note">${e[1]}</span></div>`).join('')}</div>
+      </div>
+      <div class="block">
+        <h4>Signal words</h4>
+        <div class="signals">${t.signals.map(s=>`<span class="signal">${s}</span>`).join('')}</div>
+      </div>
+      <div class="block">
+        <h4>Common mistake</h4>
+        <div class="warn"><b class="x">✕ ${t.warnBad}</b><br><span class="fix">✓ ${t.warnFix}</span><br><span style="display:block;margin-top:8px">${t.warnNote}</span></div>
+      </div>
+    </div>`;
+  modalEl.querySelector('.close').addEventListener('click', closeModal);
+  modalBg.classList.add('open');
+  document.body.style.overflow='hidden';
+}
+function closeModal(){modalBg.classList.remove('open');document.body.style.overflow='';}
+modalBg.addEventListener('click', e=>{if(e.target===modalBg) closeModal();});
+document.addEventListener('keydown', e=>{if(e.key==='Escape') closeModal();});
+
+/* Timeline */
+const tlEl = document.getElementById('tlmarks');
+TL.forEach(m=>{
+  const t = TENSES.find(x=>x.id===m.ref);
+  const d = document.createElement('div');
+  d.className='tl-mark';
+  d.style.left = m.pos+'%';
+  d.innerHTML = `<div class="bar"></div><div class="lbl">${t.name}</div><div class="sub">${m.sub}</div>`;
+  tlEl.appendChild(d);
+});
+function stagger(){
+  const marks=[...tlEl.children];
+  if(window.innerWidth<=760){marks.forEach(m=>m.style.top='');return;}
+  const rows=[6,72,6,72,124,6];
+  marks.forEach((m,i)=>{m.style.top=(rows[i]||6)+'px';});
+}
+stagger();
+window.addEventListener('resize',stagger);
+
+/* Compare table */
+document.getElementById('cmptable').innerHTML =
+  `<tr><th>Tense</th><th>Use it for…</th><th>Example</th></tr>` +
+  COMPARE.map(r=>`<tr><td>${r[0]}</td><td>${r[1]}</td><td class="m">${r[2]}</td></tr>`).join('');
+
+/* Tips */
+const tipsEl = document.getElementById('tips');
+TIPS.forEach(tp=>{
+  const d=document.createElement('div');
+  d.className='card';d.style.cursor='default';
+  d.innerHTML=`<h3 style="font-size:20px;margin-top:0">${tp.t}</h3><div class="gloss" style="margin-top:8px">${tp.d}</div>`;
+  tipsEl.appendChild(d);
+});
+
+/* =========================================================
+   PRACTICE
+========================================================= */
+const T = {ps:"Present Simple", pc:"Present Continuous", pastS:"Past Simple",
+           pp:"Present Perfect", fut:"Future (will / going to)", pastC:"Past Continuous"};
+
+const BANK = [
+  {type:"which", situ:"Talking about your morning routine", s:"I <span class='gap'>check</span> my phone every morning before work.", correct:T.ps, why:"“Every morning” = a repeated habit → Present Simple."},
+  {type:"which", situ:"On a phone call", s:"Sorry, I can't talk — I <span class='gap'>am driving</span> right now.", correct:T.pc, why:"“Right now” = happening at this moment → Present Continuous."},
+  {type:"which", situ:"Telling a friend about your weekend", s:"We <span class='gap'>watched</span> two films last night.", correct:T.pastS, why:"“Last night” is a finished time → Past Simple."},
+  {type:"which", situ:"Sharing life experience", s:"I <span class='gap'>have never been</span> to Japan.", correct:T.pp, why:"Experience up to now, no specific time → Present Perfect."},
+  {type:"which", situ:"Making a plan", s:"I <span class='gap'>will call</span> you as soon as I land.", correct:T.fut, why:"A promise / future action → Future (will)."},
+  {type:"which", situ:"Describing a scene", s:"At 9pm I <span class='gap'>was cooking</span> dinner.", correct:T.pastC, why:"An action in progress at a past moment → Past Continuous."},
+  {type:"which", situ:"General fact", s:"The sun <span class='gap'>rises</span> in the east.", correct:T.ps, why:"A general truth → Present Simple."},
+  {type:"which", situ:"Right this second", s:"Look — it <span class='gap'>is snowing</span>!", correct:T.pc, why:"Happening now → Present Continuous."},
+  {type:"which", situ:"Recent result", s:"I can't find my keys — I <span class='gap'>have lost</span> them.", correct:T.pp, why:"Past action with a result now → Present Perfect."},
+  {type:"which", situ:"Interrupted past action", s:"I <span class='gap'>was reading</span> when the lights went out.", correct:T.pastC, why:"Longer background action interrupted by a short one → Past Continuous."},
+  {type:"which", situ:"A finished trip", s:"She <span class='gap'>flew</span> to Rome in 2021.", correct:T.pastS, why:"Specific finished time (in 2021) → Past Simple."},
+  {type:"which", situ:"A decision made just now", s:"It's cold in here. I <span class='gap'>will close</span> the window.", correct:T.fut, why:"A decision made at the moment of speaking → Future (will)."},
+  {type:"which", situ:"A fixed timetable", s:"The last train <span class='gap'>leaves</span> at 11:45.", correct:T.ps, why:"Timetables use Present Simple even for the future."},
+  {type:"which", situ:"An arranged plan", s:"We <span class='gap'>are meeting</span> the investors on Thursday.", correct:T.pc, why:"A fixed, arranged future plan → Present Continuous."},
+  {type:"which", situ:"Duration up to now", s:"They <span class='gap'>have lived</span> here for ten years.", correct:T.pp, why:"Started in the past and still true → Present Perfect (for + period)."},
+  {type:"which", situ:"Two past actions at once", s:"While I <span class='gap'>was studying</span>, my brother was gaming.", correct:T.pastC, why:"Two ongoing past actions in parallel → Past Continuous."},
+
+  {type:"fill", situ:"Daily habit", stem:"She ___ to the gym three times a week.", options:["goes","is going","went","has gone"], answer:0, tense:T.ps, why:"Repeated habit → Present Simple. He/she/it takes -s: “goes”."},
+  {type:"fill", situ:"Happening now", stem:"Be quiet, the baby ___.", options:["sleeps","is sleeping","slept","has slept"], answer:1, tense:T.pc, why:"Happening at this moment → Present Continuous “is sleeping”."},
+  {type:"fill", situ:"Finished past", stem:"We ___ a great restaurant last weekend.", options:["find","are finding","found","have found"], answer:2, tense:T.pastS, why:"“Last weekend” is finished → Past Simple “found”."},
+  {type:"fill", situ:"Experience", stem:"___ you ever ___ a marathon?", options:["Did / run","Have / run","Do / run","Are / running"], answer:1, tense:T.pp, why:"“Ever” + life experience → Present Perfect “Have you ever run”."},
+  {type:"fill", situ:"Prediction", stem:"I think it ___ tomorrow.", options:["rains","is raining","will rain","rained"], answer:2, tense:T.fut, why:"A prediction about the future → “will rain”."},
+  {type:"fill", situ:"Past in progress", stem:"When you called, I ___ dinner.", options:["cook","was cooking","cooked","have cooked"], answer:1, tense:T.pastC, why:"Longer action interrupted by a short one → Past Continuous “was cooking”."},
+  {type:"fill", situ:"Negative past", stem:"They ___ to the party yesterday.", options:["didn't go","didn't went","don't go","haven't gone"], answer:0, tense:T.pastS, why:"After “didn't” use the base verb → “didn't go”."},
+  {type:"fill", situ:"General truth", stem:"Water ___ at 100 degrees.", options:["is boiling","boils","boiled","has boiled"], answer:1, tense:T.ps, why:"A scientific fact → Present Simple “boils”."},
+  {type:"fill", situ:"Just happened", stem:"She ___ just ___ the office.", options:["has / left","is / leaving","did / leave","was / leaving"], answer:0, tense:T.pp, why:"“Just” + recent action relevant now → Present Perfect “has just left”."},
+  {type:"fill", situ:"Arranged plan", stem:"We ___ our new flat this Saturday.", options:["move","are moving","moved","will moving"], answer:1, tense:T.pc, why:"A fixed arrangement in the near future → Present Continuous “are moving”."},
+  {type:"fill", situ:"Offer / promise", stem:"Don't worry, I ___ you with the bags.", options:["help","am helping","will help","helped"], answer:2, tense:T.fut, why:"An offer decided now → “will help”."},
+  {type:"fill", situ:"Setting the scene", stem:"The sun ___ and everyone was smiling.", options:["shines","was shining","has shone","shine"], answer:1, tense:T.pastC, why:"Background scene in the past → Past Continuous “was shining”."},
+  {type:"fill", situ:"State verb", stem:"I ___ what you mean.", options:["am understanding","understand","was understanding","have been understanding"], answer:1, tense:T.ps, why:"“Understand” is a state verb — use Present Simple, not -ing."},
+  {type:"fill", situ:"Since a point in time", stem:"I ___ him since high school.", options:["know","am knowing","have known","knew"], answer:2, tense:T.pp, why:"“Since” + still true now → Present Perfect “have known”."},
+  {type:"fill", situ:"Plan from evidence", stem:"Look at those clouds — it ___ rain.", options:["is going to","will","goes to","rains"], answer:0, tense:T.fut, why:"Evidence you can see now → “is going to rain”."},
+  {type:"fill", situ:"Specific past time", stem:"He ___ his first song in 2019.", options:["releases","has released","released","was releasing"], answer:2, tense:T.pastS, why:"Exact finished time (2019) → Past Simple “released”."},
+  {type:"fill", situ:"Around now / temporary", stem:"I ___ a fascinating book these days.", options:["read","am reading","have read","was reading"], answer:1, tense:T.pc, why:"Temporary, around-now activity → Present Continuous “am reading”."},
+  {type:"fill", situ:"Not yet done", stem:"I haven't finished the report ___.", options:["yet","ago","already","now"], answer:0, tense:T.pp, why:"Present Perfect negatives pair with “yet”."},
+  {type:"fill", situ:"Interrupted moment", stem:"What ___ you ___ at midnight?", options:["did / do","were / doing","are / doing","have / done"], answer:1, tense:T.pastC, why:"Asking about an action in progress at a past time → Past Continuous “were you doing”."},
+  {type:"fill", situ:"Routine question", stem:"___ she usually ___ coffee or tea?", options:["Does / drink","Is / drinking","Did / drink","Has / drunk"], answer:0, tense:T.ps, why:"“Usually” = habit → Present Simple question “Does she drink”."}
+];
+
+const ALL_TENSES = [T.ps, T.pc, T.pastS, T.pp, T.fut, T.pastC];
+
+const QUIZ_LEN = 10;
+let mode = "which";
+let queue = [], idx = 0, score = 0, streak = 0, answered = false;
+let perTense = {};
+
+function pool(){
+  if(mode==="which") return BANK.filter(q=>q.type==="which");
+  if(mode==="fill")  return BANK.filter(q=>q.type==="fill");
+  return BANK.slice();
+}
+function shuffle(a){a=[...a];for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]];}return a;}
+
+function startQuiz(){
+  queue = shuffle(pool()).slice(0, Math.min(QUIZ_LEN, pool().length));
+  idx=0;score=0;streak=0;perTense={};answered=false;
+  updateStats();renderQ();
+}
+
+const quizArea = document.getElementById('quiz-area');
+function tenseOf(q){ return q.type==="which" ? q.correct : q.tense; }
+
+function renderQ(){
+  answered=false;
+  const q = queue[idx];
+  document.getElementById('qpos').textContent = idx+1;
+  document.getElementById('qtotal').textContent = queue.length;
+  document.getElementById('pfill').style.width = (idx/queue.length*100)+'%';
+
+  const keys=['1','2','3','4','5','6'];
+  let optionsHTML='';
+  if(q.type==="which"){
+    optionsHTML = `<div class="opts">` + ALL_TENSES.map((o,i)=>
+      `<button class="opt" data-i="${i}" data-correct="${o===q.correct}">
+         <span class="key">${keys[i]}</span><span>${o}</span><span class="mark"></span></button>`).join('') + `</div>`;
+  } else {
+    optionsHTML = `<div class="opts two">` + q.options.map((o,i)=>
+      `<button class="opt" data-i="${i}" data-correct="${i===q.answer}">
+         <span class="key">${keys[i]}</span><span>${o}</span><span class="mark"></span></button>`).join('') + `</div>`;
+  }
+
+  const prompt = q.type==="which"
+      ? `<div class="q-text">${q.s}</div><div class="q-hint">Which tense is this — and why?</div>`
+      : `<div class="q-text">${q.stem.replace('___','<span class="gap">___</span>')}</div><div class="q-hint">Choose the correct form.</div>`;
+
+  quizArea.innerHTML = `
+    <div class="q-card">
+      <div class="q-kicker">SITUATION · <span class="situ">${q.situ}</span></div>
+      ${prompt}
+      ${optionsHTML}
+      <div class="feedback" id="fb"></div>
+      <div class="next-row"><button class="btn" id="nextBtn" disabled>Next →</button></div>
+    </div>`;
+
+  quizArea.querySelectorAll('.opt').forEach(btn=>btn.addEventListener('click', ()=>choose(btn)));
+  document.getElementById('nextBtn').addEventListener('click', next);
+}
+
+function choose(btn){
+  if(answered) return;
+  answered=true;
+  const q=queue[idx];
+  const isCorrect = btn.dataset.correct==="true";
+  quizArea.querySelectorAll('.opt').forEach(o=>{
+    o.disabled=true;
+    if(o.dataset.correct==="true"){o.classList.add('correct');o.querySelector('.mark').textContent='✓';}
+  });
+  if(!isCorrect){btn.classList.add('wrong');btn.querySelector('.mark').textContent='✕';}
+
+  const tn=tenseOf(q);
+  perTense[tn]=perTense[tn]||{correct:0,total:0};
+  perTense[tn].total++;
+  if(isCorrect){score++;streak++;perTense[tn].correct++;} else {streak=0;}
+  updateStats();
+
+  const fb=document.getElementById('fb');
+  fb.className='feedback show '+(isCorrect?'ok':'no');
+  fb.innerHTML = `<span class="verdict">${isCorrect?'Correct':'Not quite'}</span>${q.why} <span class="tag">${tenseOf(q)}</span>`;
+  document.getElementById('nextBtn').disabled=false;
+  saveProgress();
+}
+
+function next(){
+  if(!answered) return;
+  idx++;
+  if(idx>=queue.length){ showResults(); } else renderQ();
+}
+
+function updateStats(){
+  document.getElementById('score').textContent=score;
+  document.getElementById('streak').textContent=streak;
+}
+
+function showResults(){
+  document.getElementById('pfill').style.width='100%';
+  const pct = Math.round(score/queue.length*100);
+  let title,msg;
+  if(pct>=90){title="Outstanding.";msg="You've basically got these six down. Switch mode and keep it sharp.";}
+  else if(pct>=70){title="Strong work.";msg="Solid grasp — review the ones you missed and you're there.";}
+  else if(pct>=50){title="Getting there.";msg="The foundation is forming. Re-read the two tenses you missed most, then retry.";}
+  else {title="Good start.";msg="Head back to Learn for the tricky ones, then run this again — it clicks fast.";}
+
+  const bd = Object.entries(perTense).map(([name,d])=>{
+    const p=Math.round(d.correct/d.total*100);
+    return `<div class="bd"><div class="n">${name}</div><div class="v">${d.correct}/${d.total}</div>
+      <div class="track"><i style="width:${p}%"></i></div></div>`;
+  }).join('');
+
+  quizArea.innerHTML = `
+    <div class="results">
+      <div class="score">${score}<span class="of">/${queue.length}</span></div>
+      <h3>${title}</h3>
+      <p>${msg}</p>
+      <div class="breakdown">${bd||''}</div>
+      <div class="results-actions">
+        <button class="btn" id="againBtn">Try again →</button>
+        <button class="btn ghost" id="learnBtn">Back to Learn</button>
+      </div>
+    </div>`;
+  document.getElementById('againBtn').addEventListener('click', startQuiz);
+  document.getElementById('learnBtn').addEventListener('click', ()=>switchTab('learn'));
+  clearProgress();
+}
+
+document.querySelectorAll('.mode').forEach(b=>{
+  b.addEventListener('click', ()=>{
+    document.querySelectorAll('.mode').forEach(x=>x.classList.remove('active'));
+    b.classList.add('active');
+    mode=b.dataset.mode;
+    startQuiz();
+  });
+});
+
+document.addEventListener('keydown', e=>{
+  if(!document.getElementById('practice').classList.contains('active')) return;
+  if(modalBg.classList.contains('open')) return;
+  if(['1','2','3','4','5','6'].includes(e.key)){
+    const btn=quizArea.querySelector(`.opt[data-i="${+e.key-1}"]`);
+    if(btn && !answered) btn.click();
+  }
+  if(e.key==='Enter'){
+    const nb=document.getElementById('nextBtn');
+    if(nb && !nb.disabled) nb.click();
+    else {const ab=document.getElementById('againBtn'); if(ab) ab.click();}
+  }
+});
+
+function saveProgress(){
+  try{localStorage.setItem('tenselab', JSON.stringify({mode,idx,score,streak,perTense}));}catch(e){}
+}
+function clearProgress(){try{localStorage.removeItem('tenselab');}catch(e){}}
+
+function switchTab(name){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active', t.dataset.tab===name));
+  document.querySelectorAll('.panel').forEach(p=>p.classList.toggle('active', p.id===name));
+  window.scrollTo({top:0,behavior:'smooth'});
+  if(name==='practice' && !queue.length) startQuiz();
+}
+document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click', ()=>switchTab(t.dataset.tab)));
+
+startQuiz();
+</script>
+</body>
+</html>
