@@ -1,45 +1,50 @@
-# Tense Lab — English Tenses Trainer (IELTS Band 8)
+# Tense Lab
 
-Интерактивный тренажёр **всех 12 английских времён** с фокусом на подготовку
-к IELTS (Grammatical Range & Accuracy → Band 8).
+An interactive study tool for the twelve English tenses. Short lessons, focused drills and grammar games turn the rules into practice, with explanations after each answer and progress saved in the browser.
 
-## Разделы
+[Try Tense Lab](https://english-tenses-grammar-trainer.vercel.app/) · [Download the source](https://github.com/blvgor/tense-lab/archive/refs/heads/main.zip)
 
-- **Learn** — курс из 12 уроков в стиле Duolingo (по уроку на время).
-  Каждый урок — ~15 шагов восьми типов: теория, «верно/неверно», «какое
-  время?», «вставь форму», «собери предложение из слов», «впиши сам»,
-  «послушай и впиши» (озвучка через Web Speech API), «найди ошибку»,
-  IELTS-контекст. Прогресс и лучший результат сохраняются, у каждого урока
-  есть кнопка Guide с полным разбором времени.
-- **Reference** — карта системы 3×4 (время × аспект), таймлайн шести базовых,
-  сводная таблица 12 времён и 10 «решающих пар».
-- **Practice** — 150+ заданий, 5 типов дриллов: Which tense? · Fill the gap ·
-  Type the form · Error hunt · Mixed. Развёрнутый фидбек после каждого ответа.
-  Сессии 10/20/40.
-- **Games** — Sprint (длительность выбираешь сам: пресеты 30/60/90/120 сек или
-  своё значение 10–600 сек, рекорды считаются отдельно для каждой длительности),
-  Match pairs, Survival (3 жизни).
-- **Flashcards** — 3 колоды (108 карточек): триггеры времён, неправильные
-  глаголы, слова-сигналы. Интервальное повторение (Leitner).
-- **IELTS** — плейбук Band 8: какие времена нужны в Writing Task 1/2 и
-  Speaking Part 1–3, восемь «убийц балла», 24 экзаменационных вопроса и
-  3 интерактивных cloze-текста.
-- **Progress** — дашборд: пройденные уроки, точность по каждому времени и
-  типу активности, слабые места, рекорды.
+![Tense Lab lesson overview](docs/preview.png)
 
-Дизайн — Inter, плоские 1px-границы, один акцентный цвет, 8px-ритм.
-Статика без сборки: `index.html` + `styles.css` + `app.js` + `lessons.js` +
-4 JS-файла с данными. Прогресс хранится в localStorage.
+## What you can do
 
-## Локально
+- **Learn:** follow twelve guided lessons with theory, sentence building, listening and answer checks.
+- **Reference:** compare tense forms, timelines, signal words and common mistakes.
+- **Practice:** choose a drill type and a session of 10, 20 or 40 questions; review the explanation for each answer.
+- **Games:** try a timed Sprint, Match pairs or Survival.
+- **Flashcards:** review tense triggers, irregular verbs and signal words with spaced repetition.
+- **IELTS:** explore grammar examples for Writing and Speaking, then practise with exam contexts.
+- **Progress:** track accuracy, completed lessons, flashcards and personal bests.
+
+## Run locally
+
+Requires Python 3 and a modern browser. There are no npm dependencies, build steps or accounts to configure.
 
 ```bash
-python3 -m http.server 4173
-# открыть http://localhost:4173
+git clone https://github.com/blvgor/tense-lab.git
+cd tense-lab
+python3 -m http.server 4173 --bind 127.0.0.1
 ```
 
-## Deploy на Vercel
+Open [http://127.0.0.1:4173](http://127.0.0.1:4173). Alternatively, download the ZIP above, extract it and run the same Python command inside the extracted folder.
 
-```bash
-vercel deploy --prod
-```
+## Project structure
+
+| File | Purpose |
+| --- | --- |
+| `index.html` / `styles.css` | Page structure and presentation |
+| `app.js` | Navigation, practice, games, flashcards and progress |
+| `lessons.js` | Guided lesson content and interactions |
+| `data-tenses.js` | Tense definitions and reference material |
+| `data-questions.js` | Practice question bank |
+| `data-cards.js` | Flashcard decks |
+| `data-ielts.js` | IELTS examples and exercises |
+| `vercel.json` | Static hosting configuration |
+
+## Browser behaviour
+
+Progress is stored in `localStorage` on the current browser and device. Clearing site data removes that progress; there is no account sync. Listening exercises use browser speech synthesis, so the available voices depend on the browser and operating system. Google Fonts supplies the interface typeface.
+
+Exercises are in English, with occasional explanations in Russian. The IELTS section is independent practice material and does not guarantee an exam score.
+
+Designed and built by [Egor Belyakov](https://github.com/blvgor). [Behance](https://www.behance.net/blvgor) · [LinkedIn](https://www.linkedin.com/in/belyakovuk/)
